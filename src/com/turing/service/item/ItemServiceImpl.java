@@ -16,8 +16,9 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public int save(String itemName, int price, ItemCategory itemCategory, int stockQuantity) {
+    public int save(String itemCode, String itemName, int price, ItemCategory itemCategory, int stockQuantity) {
         Item item = new Item();
+        item.setItemCode(itemCode);
         item.setName(itemName);
         item.setPrice(price);
         item.setItemCategory(itemCategory);
@@ -26,9 +27,10 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public void edit(int id, String itemName, int price, ItemCategory itemCategory, int stockQuantity) {
+    public void edit(int id, String itemCode, String itemName, int price, ItemCategory itemCategory, int stockQuantity) {
         Item item = new Item();
         item.setId(id);
+        item.setItemCode(itemCode);
         item.setName(itemName);
         item.setPrice(price);
         item.setItemCategory(itemCategory);
@@ -42,8 +44,5 @@ public class ItemServiceImpl implements ItemService {
         return itemDao.getAll();
     }
 
-    @Override
-    public void update(int id, String itemName, int price, ItemCategory itemCategory, int stockQuantity) {
 
-    }
 }

@@ -58,12 +58,13 @@ public class HomePage extends javax.swing.JFrame {
         List<Item> items = itemService.getAll();
         
         for(Item item: items) {
-            Object row[] = new Object[5];
+            Object row[] = new Object[6];
             row[0] = item.getId();
-            row[1] = item.getName();
-            row[2] = item.getPrice();
-            row[3] = item.getItemCategory().getName();
-            row[4] = item.getStockQuantity();
+            row[1] = item.getItemCode();
+            row[2] = item.getName();
+            row[3] = item.getPrice();
+            row[4] = item.getItemCategory().getName();
+            row[5] = item.getStockQuantity();
             
             itemTabelModel.addRow(row);
         }
@@ -118,6 +119,8 @@ public class HomePage extends javax.swing.JFrame {
         btnItemAdd = new javax.swing.JButton();
         btnItemEdit = new javax.swing.JButton();
         txtItemPrice = new javax.swing.JFormattedTextField();
+        jLabel7 = new javax.swing.JLabel();
+        txtItemCode = new javax.swing.JTextField();
         salePanel1 = new com.turing.ui.SalePanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -229,8 +232,8 @@ public class HomePage extends javax.swing.JFrame {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAddItemCategory)
                     .addComponent(btnEditItemCategory))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 58, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 314, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -259,11 +262,11 @@ public class HomePage extends javax.swing.JFrame {
 
             },
             new String [] {
-                "id", "name", "price", "category", "stock quantity"
+                "id", "code", "name", "price", "category", "stock quantity"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class, java.lang.Integer.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class, java.lang.Integer.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -291,51 +294,56 @@ public class HomePage extends javax.swing.JFrame {
             }
         });
 
+        jLabel7.setText("Code");
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 541, Short.MAX_VALUE)
+                .addContainerGap())
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addGap(16, 16, 16)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGap(2, 2, 2)
-                        .addComponent(jLabel4))
-                    .addComponent(jLabel3))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnItemAdd))
                     .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addComponent(lblItemId)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(lblItemId)
+                                .addGap(94, 94, 94)
+                                .addComponent(jLabel7))
+                            .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(txtItemName, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel5)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtItemPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 120, Short.MAX_VALUE)
-                                .addComponent(jLabel6))
-                            .addGroup(jPanel6Layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(btnItemAdd)))
+                                .addComponent(jLabel5)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(cbItemCategory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnItemEdit))
-                        .addGap(22, 22, 22))))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                .addComponent(jScrollPane2)
-                .addContainerGap())
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtItemCode, javax.swing.GroupLayout.DEFAULT_SIZE, 82, Short.MAX_VALUE)
+                            .addComponent(txtItemPrice))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel6)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(cbItemCategory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnItemEdit))
+                .addGap(22, 22, 22))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGap(14, 14, 14)
+                .addGap(9, 9, 9)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(lblItemId))
+                    .addComponent(lblItemId)
+                    .addComponent(jLabel7)
+                    .addComponent(txtItemCode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtItemName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -349,8 +357,8 @@ public class HomePage extends javax.swing.JFrame {
                     .addComponent(btnItemAdd)
                     .addComponent(btnItemEdit))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 386, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 439, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout paneItemLayout = new javax.swing.GroupLayout(paneItem);
@@ -453,11 +461,13 @@ public class HomePage extends javax.swing.JFrame {
         String itemName = txtItemName.getText();
         int price = Integer.parseInt(txtItemPrice.getText());
         String itemCategory = cbItemCategory.getItemAt(cbItemCategory.getSelectedIndex());
+        String itemCode = txtItemCode.getText();
         
-        if(itemName != "" && txtItemPrice.getText() != "") {
-            int id = this.itemService.save(itemName, price, this.itemCategoryMap.get(itemCategory), 0);
-            this.itemTabelModel.insertRow(this.itemTabelModel.getRowCount(), new Object[]{id, itemName, price, this.itemCategoryMap.get(itemCategory).getName(), 0});
+        if(itemName != "" && txtItemPrice.getText() != "" && itemCode !="") {
+            int id = this.itemService.save(itemCode, itemName, price, this.itemCategoryMap.get(itemCategory), 0);
+            this.itemTabelModel.insertRow(this.itemTabelModel.getRowCount(), new Object[]{id, itemCode, itemName, price, this.itemCategoryMap.get(itemCategory).getName(), 0});
             this.txtItemName.setText("");
+            this.txtItemCode.setText("");
             this.txtItemPrice.setText("0");
         }
     }//GEN-LAST:event_btnItemAddActionPerformed
@@ -465,11 +475,13 @@ public class HomePage extends javax.swing.JFrame {
     private void tblItemMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblItemMouseClicked
         // TODO add your handling code here:
         String itemId = String.valueOf(itemTabelModel.getValueAt(tblItem.getSelectedRow(), 0));
-        String itemName = String.valueOf(itemTabelModel.getValueAt(tblItem.getSelectedRow(), 1));
-        String price = String.valueOf(itemTabelModel.getValueAt(tblItem.getSelectedRow(), 2));
-        String itemCategoryKey = String.valueOf(itemTabelModel.getValueAt(tblItem.getSelectedRow(), 3));
+        String itemCode = String.valueOf(itemTabelModel.getValueAt(tblItem.getSelectedRow(), 1));
+        String itemName = String.valueOf(itemTabelModel.getValueAt(tblItem.getSelectedRow(), 2));
+        String price = String.valueOf(itemTabelModel.getValueAt(tblItem.getSelectedRow(), 3));
+        String itemCategoryKey = String.valueOf(itemTabelModel.getValueAt(tblItem.getSelectedRow(), 4));
         
         lblItemId.setText(itemId);
+        txtItemCode.setText(itemCode);
         txtItemName.setText(itemName);
         txtItemPrice.setText(price);
         cbItemCategory.setSelectedItem(itemCategoryKey);
@@ -482,17 +494,20 @@ public class HomePage extends javax.swing.JFrame {
         String itemName = txtItemName.getText();
         int price = Integer.parseInt(txtItemPrice.getText());
         String itemCategory = cbItemCategory.getItemAt(cbItemCategory.getSelectedIndex());
+        String itemCode = txtItemCode.getText();
         
-        if(itemName != "" && txtItemPrice.getText() != "") {
-            this.itemService.edit(id, itemName, price, this.itemCategoryMap.get(itemCategory), 0);
+        if(itemName != "" && txtItemPrice.getText() != "" && itemCode != "") {
+            this.itemService.edit(id, itemCode, itemName, price, this.itemCategoryMap.get(itemCategory), 0);
             itemTabelModel.setValueAt(lblItemId.getText(), tblItem.getSelectedRow(), 0);
-            itemTabelModel.setValueAt(itemName, tblItem.getSelectedRow(), 1);
-            itemTabelModel.setValueAt(price, tblItem.getSelectedRow(), 2);
-            itemTabelModel.setValueAt(itemCategory, tblItem.getSelectedRow(), 3);
+            itemTabelModel.setValueAt(itemCode, tblItem.getSelectedRow(), 1);
+            itemTabelModel.setValueAt(itemName, tblItem.getSelectedRow(), 2);
+            itemTabelModel.setValueAt(price, tblItem.getSelectedRow(), 3);
+            itemTabelModel.setValueAt(itemCategory, tblItem.getSelectedRow(), 4);
                       
             this.lblItemId.setText("");
             this.txtItemName.setText("");
             this.txtItemPrice.setText("0");
+            this.txtItemCode.setText("");
             this.cbItemCategory.setSelectedIndex(0);
         }
     }//GEN-LAST:event_btnItemEditActionPerformed
@@ -547,6 +562,7 @@ public class HomePage extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
@@ -559,6 +575,7 @@ public class HomePage extends javax.swing.JFrame {
     private javax.swing.JTable tblItemCategory;
     private javax.swing.JTextField txtItemCategoryId;
     private javax.swing.JTextField txtItemCategoryName;
+    private javax.swing.JTextField txtItemCode;
     private javax.swing.JTextField txtItemName;
     private javax.swing.JFormattedTextField txtItemPrice;
     // End of variables declaration//GEN-END:variables
