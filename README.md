@@ -21,7 +21,7 @@ ___
 * Sale report by Cashier by Date interval, for example How many item are sold and their total price amount within Jan 1 and Feb 2.
 * Monthly total sale report
 
-## TODO
+## Future Improvement
 * to add error handling
 * to check unique username and password
 * to check unique item code
