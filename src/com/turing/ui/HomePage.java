@@ -7,10 +7,14 @@ package com.turing.ui;
 
 import com.turing.model.Item;
 import com.turing.model.ItemCategory;
+import com.turing.model.User;
+import com.turing.model.UserType;
 import com.turing.service.itemcategory.ItemCategoryService;
 import com.turing.service.itemcategory.ItemCategoryServiceImpl;
 import com.turing.service.item.ItemService;
 import com.turing.service.item.ItemServiceImpl;
+import com.turing.service.user.UserService;
+import com.turing.service.user.UserServiceImpl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -22,19 +26,33 @@ import javax.swing.table.DefaultTableModel;
  * @author kaung
  */
 public class HomePage extends javax.swing.JFrame {
+    LoginPage loginPage;
     DefaultTableModel itemCategoryTabelModel;
     DefaultTableModel itemTabelModel;
     ItemCategoryService itemCategoryService = new ItemCategoryServiceImpl();
     ItemService itemService = new ItemServiceImpl();
     Map<String, ItemCategory> itemCategoryMap;
+    UserService userService = UserServiceImpl.getUserService();
     /**
      * Creates new form HomePage
      */
-    public HomePage() {
+    public HomePage(LoginPage loginPage) {
+        this.loginPage = loginPage;
+        User user = this.userService.getUser();
+        
+        
         initComponents();
+        
+        if(user.getUserType() == UserType.CASHIER) {
+            tabbedPane.remove(userPanel2);
+            tabbedPane.remove(reportPanel1);
+            tabbedPane.remove(purchasePanel1);
+        }
+        
         this.loadItemCategory();
         this.loadItem();
         this.loadItemCategoryCombo();
+       
     }
     
     public void loadItemCategory() {
@@ -55,6 +73,7 @@ public class HomePage extends javax.swing.JFrame {
     public void loadItem() {
         
         itemTabelModel = (DefaultTableModel) tblItem.getModel();
+        itemTabelModel.getDataVector().removeAllElements();
         List<Item> items = itemService.getAll();
         
         for(Item item: items) {
@@ -122,6 +141,10 @@ public class HomePage extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         txtItemCode = new javax.swing.JTextField();
         salePanel1 = new com.turing.ui.SalePanel();
+        purchasePanel1 = new com.turing.ui.PurchasePanel();
+        reportPanel1 = new com.turing.ui.ReportPanel();
+        userPanel2 = new com.turing.ui.UserPanel();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -357,7 +380,7 @@ public class HomePage extends javax.swing.JFrame {
                     .addComponent(btnItemAdd)
                     .addComponent(btnItemEdit))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 439, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 419, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -379,6 +402,16 @@ public class HomePage extends javax.swing.JFrame {
 
         tabbedPane.addTab("Item", paneItem);
         tabbedPane.addTab("Sale", salePanel1);
+        tabbedPane.addTab("Purchase", purchasePanel1);
+        tabbedPane.addTab("Report", reportPanel1);
+        tabbedPane.addTab("User", userPanel2);
+
+        jButton1.setText("Logout");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -386,14 +419,20 @@ public class HomePage extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(tabbedPane)
+                .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 890, Short.MAX_VALUE)
                 .addGap(23, 23, 23))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton1)
+                .addGap(34, 34, 34))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(tabbedPane)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(tabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 587, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -403,8 +442,69 @@ public class HomePage extends javax.swing.JFrame {
     private void tabbedPaneMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabbedPaneMouseClicked
         // TODO add your handling code here:
         //        this.add(new SalePanel());
-      
+        this.loadItem();
+
     }//GEN-LAST:event_tabbedPaneMouseClicked
+
+    private void btnItemEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnItemEditActionPerformed
+        // TODO add your handling code here:
+        int id = Integer.parseInt(lblItemId.getText());
+        String itemName = txtItemName.getText();
+        int price = Integer.parseInt(txtItemPrice.getText());
+        String itemCategory = cbItemCategory.getItemAt(cbItemCategory.getSelectedIndex());
+        String itemCode = txtItemCode.getText();
+
+        if(itemName != "" && txtItemPrice.getText() != "" && itemCode != "") {
+            this.itemService.edit(id, itemCode, itemName, price, this.itemCategoryMap.get(itemCategory), 0);
+            itemTabelModel.setValueAt(lblItemId.getText(), tblItem.getSelectedRow(), 0);
+            itemTabelModel.setValueAt(itemCode, tblItem.getSelectedRow(), 1);
+            itemTabelModel.setValueAt(itemName, tblItem.getSelectedRow(), 2);
+            itemTabelModel.setValueAt(price, tblItem.getSelectedRow(), 3);
+            itemTabelModel.setValueAt(itemCategory, tblItem.getSelectedRow(), 4);
+
+            this.lblItemId.setText("");
+            this.txtItemName.setText("");
+            this.txtItemPrice.setText("0");
+            this.txtItemCode.setText("");
+            this.cbItemCategory.setSelectedIndex(0);
+        }
+    }//GEN-LAST:event_btnItemEditActionPerformed
+
+    private void btnItemAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnItemAddActionPerformed
+        // TODO add your handling code here:
+        String itemName = txtItemName.getText();
+        int price = Integer.parseInt(txtItemPrice.getText());
+        String itemCategory = cbItemCategory.getItemAt(cbItemCategory.getSelectedIndex());
+        String itemCode = txtItemCode.getText();
+
+        if(itemName != "" && txtItemPrice.getText() != "" && itemCode !="") {
+            int id = this.itemService.save(itemCode, itemName, price, this.itemCategoryMap.get(itemCategory), 0);
+            this.itemTabelModel.insertRow(this.itemTabelModel.getRowCount(), new Object[]{id, itemCode, itemName, price, this.itemCategoryMap.get(itemCategory).getName(), 0});
+            this.txtItemName.setText("");
+            this.txtItemCode.setText("");
+            this.txtItemPrice.setText("0");
+        }
+    }//GEN-LAST:event_btnItemAddActionPerformed
+
+    private void tblItemMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblItemMouseClicked
+        // TODO add your handling code here:
+        String itemId = String.valueOf(itemTabelModel.getValueAt(tblItem.getSelectedRow(), 0));
+        String itemCode = String.valueOf(itemTabelModel.getValueAt(tblItem.getSelectedRow(), 1));
+        String itemName = String.valueOf(itemTabelModel.getValueAt(tblItem.getSelectedRow(), 2));
+        String price = String.valueOf(itemTabelModel.getValueAt(tblItem.getSelectedRow(), 3));
+        String itemCategoryKey = String.valueOf(itemTabelModel.getValueAt(tblItem.getSelectedRow(), 4));
+
+        lblItemId.setText(itemId);
+        txtItemCode.setText(itemCode);
+        txtItemName.setText(itemName);
+        txtItemPrice.setText(price);
+        cbItemCategory.setSelectedItem(itemCategoryKey);
+
+    }//GEN-LAST:event_tblItemMouseClicked
+
+    private void cbItemCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbItemCategoryActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbItemCategoryActionPerformed
 
     private void txtItemNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtItemNameActionPerformed
         // TODO add your handling code here:
@@ -412,7 +512,7 @@ public class HomePage extends javax.swing.JFrame {
 
     private void btnEditItemCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditItemCategoryActionPerformed
         // TODO add your handling code here:
-        
+
         int itemCategoryId = Integer.parseInt(txtItemCategoryId.getText());
         String itemCategoryName = txtItemCategoryName.getText();
         if(itemCategoryName != "") {
@@ -445,72 +545,18 @@ public class HomePage extends javax.swing.JFrame {
             this.txtItemCategoryName.setText("");
             this.loadItemCategoryCombo();
         }
-
     }//GEN-LAST:event_btnAddItemCategoryActionPerformed
 
     private void txtItemCategoryNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtItemCategoryNameActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtItemCategoryNameActionPerformed
 
-    private void cbItemCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbItemCategoryActionPerformed
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_cbItemCategoryActionPerformed
-
-    private void btnItemAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnItemAddActionPerformed
-        // TODO add your handling code here:
-        String itemName = txtItemName.getText();
-        int price = Integer.parseInt(txtItemPrice.getText());
-        String itemCategory = cbItemCategory.getItemAt(cbItemCategory.getSelectedIndex());
-        String itemCode = txtItemCode.getText();
-        
-        if(itemName != "" && txtItemPrice.getText() != "" && itemCode !="") {
-            int id = this.itemService.save(itemCode, itemName, price, this.itemCategoryMap.get(itemCategory), 0);
-            this.itemTabelModel.insertRow(this.itemTabelModel.getRowCount(), new Object[]{id, itemCode, itemName, price, this.itemCategoryMap.get(itemCategory).getName(), 0});
-            this.txtItemName.setText("");
-            this.txtItemCode.setText("");
-            this.txtItemPrice.setText("0");
-        }
-    }//GEN-LAST:event_btnItemAddActionPerformed
-
-    private void tblItemMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblItemMouseClicked
-        // TODO add your handling code here:
-        String itemId = String.valueOf(itemTabelModel.getValueAt(tblItem.getSelectedRow(), 0));
-        String itemCode = String.valueOf(itemTabelModel.getValueAt(tblItem.getSelectedRow(), 1));
-        String itemName = String.valueOf(itemTabelModel.getValueAt(tblItem.getSelectedRow(), 2));
-        String price = String.valueOf(itemTabelModel.getValueAt(tblItem.getSelectedRow(), 3));
-        String itemCategoryKey = String.valueOf(itemTabelModel.getValueAt(tblItem.getSelectedRow(), 4));
-        
-        lblItemId.setText(itemId);
-        txtItemCode.setText(itemCode);
-        txtItemName.setText(itemName);
-        txtItemPrice.setText(price);
-        cbItemCategory.setSelectedItem(itemCategoryKey);
-        
-    }//GEN-LAST:event_tblItemMouseClicked
-
-    private void btnItemEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnItemEditActionPerformed
-        // TODO add your handling code here:
-        int id = Integer.parseInt(lblItemId.getText());
-        String itemName = txtItemName.getText();
-        int price = Integer.parseInt(txtItemPrice.getText());
-        String itemCategory = cbItemCategory.getItemAt(cbItemCategory.getSelectedIndex());
-        String itemCode = txtItemCode.getText();
-        
-        if(itemName != "" && txtItemPrice.getText() != "" && itemCode != "") {
-            this.itemService.edit(id, itemCode, itemName, price, this.itemCategoryMap.get(itemCategory), 0);
-            itemTabelModel.setValueAt(lblItemId.getText(), tblItem.getSelectedRow(), 0);
-            itemTabelModel.setValueAt(itemCode, tblItem.getSelectedRow(), 1);
-            itemTabelModel.setValueAt(itemName, tblItem.getSelectedRow(), 2);
-            itemTabelModel.setValueAt(price, tblItem.getSelectedRow(), 3);
-            itemTabelModel.setValueAt(itemCategory, tblItem.getSelectedRow(), 4);
-                      
-            this.lblItemId.setText("");
-            this.txtItemName.setText("");
-            this.txtItemPrice.setText("0");
-            this.txtItemCode.setText("");
-            this.cbItemCategory.setSelectedIndex(0);
-        }
-    }//GEN-LAST:event_btnItemEditActionPerformed
+        this.userService.setUser(null);
+        this.setVisible(false);
+        this.loginPage.setVisible(true);
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     private ItemCategory getItemCategory(String name) {
         return itemCategoryMap.get(name);
@@ -518,37 +564,6 @@ public class HomePage extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(HomePage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(HomePage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(HomePage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(HomePage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new HomePage().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddItemCategory;
@@ -556,6 +571,7 @@ public class HomePage extends javax.swing.JFrame {
     private javax.swing.JButton btnItemAdd;
     private javax.swing.JButton btnItemEdit;
     private javax.swing.JComboBox<String> cbItemCategory;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -569,6 +585,8 @@ public class HomePage extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lblItemId;
     private javax.swing.JPanel paneItem;
+    private com.turing.ui.PurchasePanel purchasePanel1;
+    private com.turing.ui.ReportPanel reportPanel1;
     private com.turing.ui.SalePanel salePanel1;
     private javax.swing.JTabbedPane tabbedPane;
     private javax.swing.JTable tblItem;
@@ -578,5 +596,6 @@ public class HomePage extends javax.swing.JFrame {
     private javax.swing.JTextField txtItemCode;
     private javax.swing.JTextField txtItemName;
     private javax.swing.JFormattedTextField txtItemPrice;
+    private com.turing.ui.UserPanel userPanel2;
     // End of variables declaration//GEN-END:variables
 }

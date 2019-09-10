@@ -2,7 +2,8 @@ package com.turing.dao.purchase;
 
 import com.turing.dao.Dao;
 import com.turing.model.Purchase;
-import com.turing.model.TransitionItem;
+import com.turing.model.Transaction;
+import com.turing.model.TransactionItem;
 import com.turing.model.User;
 
 import java.sql.*;
@@ -27,7 +28,7 @@ public class PurchaseDaoImpl extends Dao implements PurchaseDao{
                 id=rs.getInt(1);
             }
 
-            for(TransitionItem item: purchase.getItemList()) {
+            for(TransactionItem item: purchase.getItemList()) {
                 insertPurchaseItem(id, item);
                 increaseStockQuantity(item);
             }
@@ -39,7 +40,7 @@ public class PurchaseDaoImpl extends Dao implements PurchaseDao{
         }
     }
 
-    private void insertPurchaseItem(int purchaseId, TransitionItem item) {
+    private void insertPurchaseItem(int purchaseId, TransactionItem item) {
         try {
             PreparedStatement st = this.connection.prepareStatement("INSERT INTO item_purchase(purchase_id, purchae_item_id, quantity) VALUES(?,?,?)");
             st.setInt(1, purchaseId);
@@ -52,7 +53,7 @@ public class PurchaseDaoImpl extends Dao implements PurchaseDao{
         }
     }
 
-    public void increaseStockQuantity(TransitionItem item) {
+    public void increaseStockQuantity(TransactionItem item) {
         try {
             PreparedStatement st = this.connection.prepareStatement(
                     "UPDATE item\n" +
@@ -79,8 +80,8 @@ public class PurchaseDaoImpl extends Dao implements PurchaseDao{
     }
 
     @Override
-    public Purchase get(Purchase purchase) {
-        Purchase purchase1 = null;
+    public Transaction get(Purchase purchase) {
+        Transaction purchase1 = null;
         try {
             Statement st = this.connection.createStatement();
             ResultSet resultSet = st.executeQuery("SELECT purchase.id, purchase.date, user.id as user_id, user.name, user.usertype\n" +
@@ -103,8 +104,8 @@ public class PurchaseDaoImpl extends Dao implements PurchaseDao{
     }
 
     @Override
-    public List<Purchase> getAll() {
-        List<Purchase> purchases = new ArrayList<>();
+    public List<Transaction> getAll() {
+        List<Transaction> purchases = new ArrayList<>();
         try {
             Statement st = this.connection.createStatement();
             ResultSet resultSet = st.executeQuery(
@@ -125,11 +126,11 @@ public class PurchaseDaoImpl extends Dao implements PurchaseDao{
         return purchases;
     }
 
-    private Purchase populatePurchase(Purchase purchase, Statement st) throws SQLException {
-        List<TransitionItem> items = new ArrayList<>();
+    private Transaction populatePurchase(Transaction purchase, Statement st) throws SQLException {
+        List<TransactionItem> items = new ArrayList<>();
 
         ResultSet resultSet = st.executeQuery(
-                "SELECT item.id, item.name, item.price, item.stock_quantity, " +
+                "SELECT item.id, item.itemCode, item.name, item.price, item.stock_quantity, " +
                         "item_purchase.quantity, item_category.id as item_category_id, " +
                         "item_category.name as item_category_name\n" +
                         "FROM item_purchase\n" +
@@ -140,7 +141,7 @@ public class PurchaseDaoImpl extends Dao implements PurchaseDao{
                         "WHERE purchase.id=" + purchase.getId());
 
         while (resultSet.next()) {
-            items.add(TransitionItem.parseTransitionItem(resultSet));
+            items.add(TransactionItem.parseTransitionItem(resultSet));
         }
 
         purchase.setItemList(items);
@@ -148,10 +149,10 @@ public class PurchaseDaoImpl extends Dao implements PurchaseDao{
         return purchase;
     }
 
-    private List<Purchase> populatePurchaseList(List<Purchase> purchases,  Statement st) throws SQLException {
-        List<Purchase> populatedPurchaseList = new ArrayList<>();
+    private List<Transaction> populatePurchaseList(List<Transaction> purchases, Statement st) throws SQLException {
+        List<Transaction> populatedPurchaseList = new ArrayList<>();
 
-        for (Purchase purchase: purchases) {
+        for (Transaction purchase: purchases) {
             populatedPurchaseList.add(populatePurchase(purchase, st));
         }
 
@@ -165,13 +166,13 @@ public class PurchaseDaoImpl extends Dao implements PurchaseDao{
     }
 
     private static void testInsert(PurchaseDao purchaseDao) {
-        TransitionItem item = new TransitionItem(2);
+        TransactionItem item = new TransactionItem(2);
         item.setQuantity(2);
 
-        TransitionItem item2 = new TransitionItem(3);
+        TransactionItem item2 = new TransactionItem(3);
         item2.setQuantity(3);
 
-        List<TransitionItem> items = new ArrayList<>();
+        List<TransactionItem> items = new ArrayList<>();
         items.add(item);
         items.add(item2);
         User user = new User(2);
@@ -190,7 +191,7 @@ public class PurchaseDaoImpl extends Dao implements PurchaseDao{
     }
 
     private static void testGetAll(PurchaseDao purchaseDao) {
-        for (Purchase purchase: purchaseDao.getAll()) {
+        for (Transaction purchase: purchaseDao.getAll()) {
             System.out.println(purchase);
         }
     }

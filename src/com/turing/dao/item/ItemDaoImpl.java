@@ -96,6 +96,25 @@ public class ItemDaoImpl extends Dao implements ItemDao {
     }
 
     @Override
+    public Item findByCode(String code) {
+        Item item1 = null;
+        try {
+            Statement st = this.connection.createStatement();
+            ResultSet resultSet = st.executeQuery("SELECT * FROM item WHERE itemCode='" + code +"'");
+
+            if(resultSet.next()) {
+                item1 = this.parseItem(resultSet);
+            }
+
+            return item1;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
     public List<Item> getAll() {
         List<Item> items = new ArrayList<>();
         try {

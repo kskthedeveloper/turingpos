@@ -14,19 +14,28 @@ import java.util.List;
 public class UserDaoImpl extends Dao implements UserDao {
 
     @Override
-    public void insert(User user) {
+    public int insert(User user) {
+        int id = 0;
         try {
-            PreparedStatement st = this.connection.prepareStatement("INSERT INTO USER(name,usertype,password ) VALUES (?,?,?)");
+            PreparedStatement st = this.connection.prepareStatement("INSERT INTO USER(name,usertype,password ) VALUES (?,?,?)", Statement.RETURN_GENERATED_KEYS);
 
             st.setString(1, user.getName());
             st.setString(2, user.getUserType().getType());
             st.setString(3, user.getPassword());
             st.executeUpdate();
+
+            ResultSet rs = st.getGeneratedKeys();
+
+            if (rs.next()) {
+                id = rs.getInt(1);
+            }
+
             st.close();
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return id;
     }
 
     @Override
@@ -88,6 +97,28 @@ public class UserDaoImpl extends Dao implements UserDao {
             e.printStackTrace();
         }
         return users;
+    }
+
+    @Override
+    public User getByNameAndPassword(String username, String password) {
+        User user1 = null;
+        try {
+            PreparedStatement st = this.connection.prepareStatement("SELECT * FROM user WHERE name=? AND password=?");
+            st.setString(1, username);
+            st.setString(2, password);
+
+            ResultSet resultSet = st.executeQuery();
+
+            if(resultSet.next()) {
+                user1 = User.parseUser(resultSet);
+            }
+
+            return user1;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override

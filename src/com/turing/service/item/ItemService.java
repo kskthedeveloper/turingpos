@@ -10,4 +10,5 @@ public interface ItemService {
     void edit(int id, String itemCode, String itemName,int price, ItemCategory itemCategory, int stockQuantity);
 
     List<Item> getAll();
+    Item findByCode(String code);
 }

@@ -8,6 +8,7 @@ import com.turing.model.ItemCategory;
 
 import java.util.List;
 
+// TODO: to check duplicate item code
 public class ItemServiceImpl implements ItemService {
     ItemDao itemDao;
 
@@ -42,6 +43,11 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<Item> getAll() {
         return itemDao.getAll();
+    }
+
+    @Override
+    public Item findByCode(String code) {
+        return itemDao.findByCode(code);
     }
 
 

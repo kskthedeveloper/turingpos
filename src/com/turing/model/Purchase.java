@@ -6,11 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-public class Purchase {
-    int id;
-    Date date;
-    User user;
-    List<TransitionItem> itemList;
+public class Purchase extends Transaction {
 
     public Purchase() {
     }
@@ -19,50 +15,19 @@ public class Purchase {
         this.id = id;
     }
 
-    public Purchase(List<TransitionItem> itemList, Date date, User user) {
+    public Purchase(List<TransactionItem> itemList, Date date, User user) {
         this.itemList = itemList;
         this.date = date;
         this.user = user;
     }
 
-    public Purchase(int id, List<TransitionItem> itemList, Date date, User user) {
+    public Purchase(int id, List<TransactionItem> itemList, Date date, User user) {
         this.id = id;
         this.itemList = itemList;
         this.date = date;
         this.user = user;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public List<TransitionItem> getItemList() {
-        return itemList;
-    }
-
-    public void setItemList(List<TransitionItem> itemList) {
-        this.itemList = itemList;
-    }
 
     public static Purchase parsePurchase(ResultSet resultSet) throws SQLException {
         User user = new User();
@@ -89,9 +54,9 @@ public class Purchase {
                 '}';
     }
 
-    private String printItemList(List<TransitionItem> items) {
+    private String printItemList(List<TransactionItem> items) {
         StringBuilder stringBuilder = new StringBuilder();
-        for (TransitionItem item: items) {
+        for (TransactionItem item: items) {
             stringBuilder.append("{" + item.getId() + ", " + item.getName() + ", " + item.getQuantity() + "}, ");
         }
         return stringBuilder.toString();

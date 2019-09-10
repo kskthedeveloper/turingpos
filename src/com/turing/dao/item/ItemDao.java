@@ -9,5 +9,6 @@ public interface ItemDao {
     void update(Item item);
     void delete(Item item);
     Item get(Item item);
+    Item findByCode(String code);
     List<Item> getAll();
 }
